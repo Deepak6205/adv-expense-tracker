@@ -23,6 +23,24 @@ const Dashboard = () => {
     <div className="flex flex-col h-screen">
       <Navbar />
 
+      {/* ✅ Top-right buttons */}
+      <div className="absolute top-4 right-6 flex gap-3">
+        {!currentUser.emailVerified && (
+          <button
+            onClick={sendVerificationEmail}
+            className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 text-sm"
+          >
+            Verify Email
+          </button>
+        )}
+        <button
+          onClick={logout}
+          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm"
+        >
+          Logout
+        </button>
+      </div>
+
       <div className="flex flex-col justify-center items-center flex-1 space-y-4">
         {isProfileIncomplete ? (
           <div className="text-center">
@@ -40,11 +58,11 @@ const Dashboard = () => {
           <div className="flex flex-col items-center space-y-4">
             <h1 className="text-2xl font-bold flex items-center gap-2">
               Welcome {currentUser.displayName}! 🎉
-              {currentUser.emailVerified ? (
+              {currentUser.emailVerified && (
                 <span className="text-green-600 text-lg font-medium">
                   (Verified)
                 </span>
-              ) : null}
+              )}
             </h1>
 
             {currentUser.photoURL && (
@@ -54,23 +72,6 @@ const Dashboard = () => {
                 className="w-24 h-24 rounded-full shadow-md"
               />
             )}
-
-            {/* ✅ Show verify email button only if not verified */}
-            {!currentUser.emailVerified && (
-              <button
-                onClick={sendVerificationEmail}
-                className="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600"
-              >
-                Verify Email
-              </button>
-            )}
-
-            <button
-              onClick={logout}
-              className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700"
-            >
-              Logout
-            </button>
           </div>
         )}
       </div>
