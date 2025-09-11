@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import ProfilePage from "./ProfilePage";
 import Navbar from "../components/Navbar";
 
 const Dashboard = () => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, sendVerificationEmail } = useAuth();
   const [showProfilePage, setShowProfilePage] = useState(false);
-  const [userDetails, setUserDetails] = useState(currentUser);
-
-  useEffect(() => {
-    setUserDetails(currentUser);
-  }, [currentUser]);
 
   if (showProfilePage) {
     return (
@@ -21,14 +16,14 @@ const Dashboard = () => {
     );
   }
 
-  const isProfileIncomplete = !userDetails?.displayName || !userDetails?.photoURL;
+  const isProfileIncomplete =
+    !currentUser?.displayName || !currentUser?.photoURL;
 
   return (
     <div className="flex flex-col h-screen">
-      {/* Navbar always at the top */}
       <Navbar />
 
-      <div className="flex flex-col justify-center items-center flex-1">
+      <div className="flex flex-col justify-center items-center flex-1 space-y-4">
         {isProfileIncomplete ? (
           <div className="text-center">
             <h2 className="text-xl font-semibold text-red-600 mb-4">
@@ -43,17 +38,36 @@ const Dashboard = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center space-y-4">
-            <h1 className="text-2xl font-bold">Welcome {userDetails.displayName}! 🎉</h1>
-            {userDetails.photoURL && (
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              Welcome {currentUser.displayName}! 🎉
+              {currentUser.emailVerified ? (
+                <span className="text-green-600 text-lg font-medium">
+                  (Verified)
+                </span>
+              ) : null}
+            </h1>
+
+            {currentUser.photoURL && (
               <img
-                src={userDetails.photoURL}
+                src={currentUser.photoURL}
                 alt="Profile"
                 className="w-24 h-24 rounded-full shadow-md"
               />
             )}
+
+            {/* ✅ Show verify email button only if not verified */}
+            {!currentUser.emailVerified && (
+              <button
+                onClick={sendVerificationEmail}
+                className="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600"
+              >
+                Verify Email
+              </button>
+            )}
+
             <button
               onClick={logout}
-              className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 mt-4"
+              className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700"
             >
               Logout
             </button>
