@@ -1,19 +1,18 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from './components/Navbar'
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
+import React, { useState } from "react";
+import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-    </Router>
+    <div>
+      {isLoggedIn ? (
+        <Dashboard />
+      ) : (
+        <AuthPage onLoginSuccess={() => setIsLoggedIn(true)} />
+      )}
+    </div>
   );
 }
 
