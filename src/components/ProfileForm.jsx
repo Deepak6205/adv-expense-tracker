@@ -1,23 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 
 const ProfileForm = ({ onUpdateSuccess }) => {
   const { currentUser, updateUserProfile } = useAuth();
-  const [name, setName] = useState(currentUser?.displayName || "");
-  const [photoURL, setPhotoURL] = useState(currentUser?.photoURL || "");
+  const [name, setName] = useState("");
+  const [photoURL, setPhotoURL] = useState("");
   const [error, setError] = useState("");
 
-  const handleUpdate = async (e) => {
-  e.preventDefault();
-  try {
-    await updateUserProfile(name, photoURL);
-    alert("Profile updated successfully!");
-    onUpdateSuccess();
-  } catch (err) {
-    setError(err.message);
-  }
-};
+  useEffect(() => {
+    if (currentUser) {
+      setName(currentUser.displayName || "");
+      setPhotoURL(currentUser.photoURL || "");
+    }
+  }, [currentUser]);
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      await updateUserProfile(name, photoURL);
+      alert("Profile updated successfully!");
+      onUpdateSuccess();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <div className="flex justify-center items-center min-h-[80vh] bg-gray-100">

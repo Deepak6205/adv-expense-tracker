@@ -8,40 +8,64 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 
-// Create context
 const AuthContext = createContext();
 
-// Hook to use AuthContext
 export const useAuth = () => useContext(AuthContext);
 
-// Provider
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Signup
-  const signup = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
-  };
+  const signup = (email, password) =>
+    createUserWithEmailAndPassword(auth, email, password);
 
-  // Login
-  const login = (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
-  };
+  const login = (email, password) =>
+    signInWithEmailAndPassword(auth, email, password);
 
-  // Logout
-  const logout = () => {
+  const logout = async () => {
     localStorage.removeItem("token");
-    return signOut(auth);
+    await signOut(auth);
+    setCurrentUser(null);
   };
 
-  // Track user state
+  const updateUserProfile = async (name, photoURL) => {
+    if (auth.currentUser) {
+      await updateProfile(auth.currentUser, { displayName: name, photoURL });
+      setCurrentUser({ ...auth.currentUser });
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const token = await user.getIdToken();
-        localStorage.setItem("token", token);
-        setCurrentUser(user);
+        try {
+          const token = await user.getIdToken();
+
+          // Fetch latest profile data from Firebase
+          const res = await fetch(
+            `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${
+              import.meta.env.VITE_FIREBASE_API_KEY
+            }`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ idToken: token }),
+            }
+          );
+
+          const data = await res.json();
+          if (data.users && data.users.length > 0) {
+            const latestUser = data.users[0];
+            user.displayName = latestUser.displayName || "";
+            user.photoURL = latestUser.photoUrl || "";
+          }
+
+          localStorage.setItem("token", token);
+          setCurrentUser(user);
+        } catch (err) {
+          console.error("Error fetching user profile:", err);
+          setCurrentUser(user);
+        }
       } else {
         setCurrentUser(null);
       }
@@ -51,29 +75,13 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  const updateUserProfile = async (name, photoURL) => {
-  if (auth.currentUser) {
-    try {
-      await updateProfile(auth.currentUser, {
-        displayName: name,
-        photoURL: photoURL,
-      });
-      // Refresh user state
-      setCurrentUser({ ...auth.currentUser });
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      throw error;
-    }
-  }
-};
-
-
   const value = {
     currentUser,
     signup,
     login,
     logout,
-    updateUserProfile, // ✅ expose
+    updateUserProfile,
+    loading,
   };
 
   return (

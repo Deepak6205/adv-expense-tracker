@@ -1,19 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
+import { useAuth } from "./context/AuthContext";
 import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { currentUser, loading } = useAuth();
 
-  return (
-    <div>
-      {isLoggedIn ? (
-        <Dashboard />
-      ) : (
-        <AuthPage onLoginSuccess={() => setIsLoggedIn(true)} />
-      )}
-    </div>
-  );
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  return <div>{currentUser ? <Dashboard /> : <AuthPage />}</div>;
 }
 
 export default App;

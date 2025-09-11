@@ -5,7 +5,6 @@ import ProfileForm from "../components/ProfileForm";
 const ProfilePage = ({ onProfileUpdated }) => {
   return (
     <div>
-      <Navbar />
       <ProfileForm onUpdateSuccess={onProfileUpdated} />
     </div>
   );
