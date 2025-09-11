@@ -1,6 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { auth } from "../services/firebase";
-import { updateProfile, sendEmailVerification } from "firebase/auth";
+import {
+  updateProfile,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -32,7 +36,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        await user.reload(); // 🔥 ensures emailVerified is always fresh
+        await user.reload(); 
         const token = await user.getIdToken();
         localStorage.setItem("token", token);
         setCurrentUser({ ...user });
@@ -68,6 +72,9 @@ export const AuthProvider = ({ children }) => {
       }
     }
   };
+  const resetPassword = (email) => {
+    return sendPasswordResetEmail(auth, email);
+  };
 
   const value = {
     currentUser,
@@ -76,6 +83,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateUserProfile,
     sendVerificationEmail,
+    resetPassword,
   };
 
   return (

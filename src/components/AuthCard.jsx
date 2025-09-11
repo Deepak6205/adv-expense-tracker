@@ -71,7 +71,9 @@ const AuthCard = ({ onLoginSuccess }) => {
           )}
 
           {error && (
-            <p className="text-red-500 text-sm font-medium text-center">{error}</p>
+            <p className="text-red-500 text-sm font-medium text-center">
+              {error}
+            </p>
           )}
 
           <button
@@ -81,7 +83,16 @@ const AuthCard = ({ onLoginSuccess }) => {
             {isSignup ? "Sign Up" : "Login"}
           </button>
         </form>
-
+          {!isSignup && (
+          <div className="text-center">
+            <a
+              href="/forgot-password"
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              Forgot Password?
+            </a>
+          </div>
+        )}
         <div className="mt-6 text-center">
           <button
             onClick={() => setIsSignup(!isSignup)}
@@ -92,6 +103,7 @@ const AuthCard = ({ onLoginSuccess }) => {
               : "Don’t have an account? Sign Up"}
           </button>
         </div>
+        
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ const Dashboard = () => {
     <div className="flex flex-col h-screen">
       <Navbar />
 
-      {/* ✅ Top-right buttons */}
+
       <div className="absolute top-4 right-6 flex gap-3">
         {!currentUser.emailVerified && (
           <button
