@@ -36,7 +36,7 @@ const Dashboard = () => {
               />
             )}
             <span className="font-semibold text-gray-800">
-              Welcome {currentUser.displayName}!
+              Welcome {currentUser.displayName}😊
             </span>
             {currentUser.emailVerified && (
               <span className="text-green-600 text-sm font-medium">
