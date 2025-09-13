@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom"; // import Link
 
 const Navbar = () => {
   const { isLoggedIn } = useSelector((s) => s.auth);
@@ -10,9 +11,15 @@ const Navbar = () => {
         <h1 className="text-xl font-bold text-blue-600">MyWebLink</h1>
       </div>
       <div className="flex gap-6 items-center text-gray-700">
-        <span className="cursor-pointer">Home</span>
-        <span className="cursor-pointer">Products</span>
-        <span className="cursor-pointer">About Us</span>
+        <Link to="/" className="cursor-pointer hover:underline">
+          Home
+        </Link>
+        <Link to="/products" className="cursor-pointer hover:underline">
+          Products
+        </Link>
+        <Link to="/about" className="cursor-pointer hover:underline">
+          About Us
+        </Link>
         {isLoggedIn && (
           <span className="text-sm text-green-600">Signed In</span>
         )}
