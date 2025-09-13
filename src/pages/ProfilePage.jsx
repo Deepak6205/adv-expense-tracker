@@ -1,5 +1,5 @@
+// src/pages/ProfilePage.jsx
 import React from "react";
-import Navbar from "../components/Navbar";
 import ProfileForm from "../components/ProfileForm";
 
 const ProfilePage = ({ onProfileUpdated }) => {

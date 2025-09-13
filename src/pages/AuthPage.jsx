@@ -1,12 +1,13 @@
-
+// src/pages/AuthPage.jsx
 import Navbar from "../components/Navbar";
 import AuthCard from "../components/AuthCard";
+import React from "react";
 
-const AuthPage = ({ onLoginSuccess }) => {
+const AuthPage = () => {
   return (
     <div>
       <Navbar />
-      <AuthCard onLoginSuccess={onLoginSuccess} />
+      <AuthCard />
     </div>
   );
 };

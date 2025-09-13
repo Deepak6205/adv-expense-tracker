@@ -1,8 +1,16 @@
+// src/components/AuthCard.jsx
 import React, { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useDispatch } from "react-redux";
+import { auth } from "../services/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { login } from "../redux/authSlice";
 
-const AuthCard = ({ onLoginSuccess }) => {
-  const { signup, login } = useAuth();
+const AuthCard = () => {
+  const dispatch = useDispatch();
   const [isSignup, setIsSignup] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,26 +21,53 @@ const AuthCard = ({ onLoginSuccess }) => {
     e.preventDefault();
     setError("");
 
-    if (isSignup) {
-      if (password !== confirmPassword) {
-        setError("Passwords do not match.");
-        return;
+    try {
+      if (isSignup) {
+        if (password !== confirmPassword) {
+          setError("Passwords do not match.");
+          return;
+        }
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCred.user;
+        const token = await user.getIdToken();
+
+        // Optional: set displayName to email username if you like
+        await updateProfile(user, { displayName: user.email.split("@")[0] });
+
+        dispatch(
+          login({
+            token,
+            userId: user.uid,
+            user: {
+              uid: user.uid,
+              displayName: user.displayName || user.email.split("@")[0],
+              photoURL: user.photoURL,
+              email: user.email,
+              emailVerified: user.emailVerified,
+            },
+          })
+        );
+      } else {
+        const userCred = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCred.user;
+        const token = await user.getIdToken();
+
+        dispatch(
+          login({
+            token,
+            userId: user.uid,
+            user: {
+              uid: user.uid,
+              displayName: user.displayName,
+              photoURL: user.photoURL,
+              email: user.email,
+              emailVerified: user.emailVerified,
+            },
+          })
+        );
       }
-      try {
-        await signup(email, password);
-        console.log("✅ User signed up successfully");
-        setIsSignup(false);
-      } catch (err) {
-        setError(err.message);
-      }
-    } else {
-      try {
-        await login(email, password);
-        console.log("✅ User logged in successfully");
-        onLoginSuccess();
-      } catch (err) {
-        setError("Invalid credentials!");
-      }
+    } catch (err) {
+      setError(err.message || "Authentication failed.");
     }
   };
 
@@ -50,6 +85,7 @@ const AuthCard = ({ onLoginSuccess }) => {
             className="border border-gray-300 focus:border-blue-500 p-3 rounded-lg"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
 
           <input
@@ -58,6 +94,7 @@ const AuthCard = ({ onLoginSuccess }) => {
             className="border border-gray-300 focus:border-blue-500 p-3 rounded-lg"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
 
           {isSignup && (
@@ -67,13 +104,12 @@ const AuthCard = ({ onLoginSuccess }) => {
               className="border border-gray-300 focus:border-blue-500 p-3 rounded-lg"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              required
             />
           )}
 
           {error && (
-            <p className="text-red-500 text-sm font-medium text-center">
-              {error}
-            </p>
+            <p className="text-red-500 text-sm font-medium text-center">{error}</p>
           )}
 
           <button
@@ -83,27 +119,20 @@ const AuthCard = ({ onLoginSuccess }) => {
             {isSignup ? "Sign Up" : "Login"}
           </button>
         </form>
-          {!isSignup && (
+
+        {!isSignup && (
           <div className="text-center">
-            <a
-              href="/forgot-password"
-              className="text-sm text-blue-600 hover:text-blue-800"
-            >
+            <a href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800">
               Forgot Password?
             </a>
           </div>
         )}
+
         <div className="mt-6 text-center">
-          <button
-            onClick={() => setIsSignup(!isSignup)}
-            className="text-blue-600 hover:text-blue-800"
-          >
-            {isSignup
-              ? "Already have an account? Login"
-              : "Don’t have an account? Sign Up"}
+          <button onClick={() => setIsSignup(!isSignup)} className="text-blue-600 hover:text-blue-800">
+            {isSignup ? "Already have an account? Login" : "Don’t have an account? Sign Up"}
           </button>
         </div>
-        
       </div>
     </div>
   );

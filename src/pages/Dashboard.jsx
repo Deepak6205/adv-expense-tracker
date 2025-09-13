@@ -1,12 +1,26 @@
+// src/pages/Dashboard.jsx
 import React, { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import ProfilePage from "./ProfilePage";
+import { useSelector, useDispatch } from "react-redux";
+import { logout as logoutAction, setUser } from "../redux/authSlice";
+import { signOut } from "firebase/auth";
+import { auth } from "../services/firebase";
 import Navbar from "../components/Navbar";
+import ProfilePage from "./ProfilePage";
 import ExpenseTracker from "../components/ExpenseTracker";
 
 const Dashboard = () => {
-  const { currentUser, logout, sendVerificationEmail } = useAuth();
+  const dispatch = useDispatch();
+  const { user } = useSelector((s) => s.auth);
   const [showProfilePage, setShowProfilePage] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      dispatch(logoutAction());
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
 
   if (showProfilePage) {
     return (
@@ -17,8 +31,7 @@ const Dashboard = () => {
     );
   }
 
-  const isProfileIncomplete =
-    !currentUser?.displayName || !currentUser?.photoURL;
+  const isProfileIncomplete = !user?.displayName || !user?.photoURL;
 
   return (
     <div className="flex flex-col h-screen">
@@ -28,36 +41,30 @@ const Dashboard = () => {
       <div className="absolute top-4 right-6 flex items-center gap-4">
         {!isProfileIncomplete && (
           <div className="flex items-center gap-3">
-            {currentUser.photoURL && (
-              <img
-                src={currentUser.photoURL}
-                alt="Profile"
-                className="w-10 h-10 rounded-full shadow-md"
-              />
-            )}
-            <span className="font-semibold text-gray-800">
-              Welcome {currentUser.displayName}😊
-            </span>
-            {currentUser.emailVerified && (
-              <span className="text-green-600 text-sm font-medium">
-                (Verified)
-              </span>
-            )}
+            {user?.photoURL && <img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-full shadow-md" />}
+            <span className="font-semibold text-gray-800">Welcome {user?.displayName} 😊</span>
+            {user?.emailVerified && <span className="text-green-600 text-sm font-medium">(Verified)</span>}
           </div>
         )}
 
-        {!currentUser.emailVerified && (
+        {!user?.emailVerified && (
           <button
-            onClick={sendVerificationEmail}
+            onClick={async () => {
+              try {
+                await auth.currentUser?.sendEmailVerification?.();
+                alert("Verification email sent!");
+              } catch (err) {
+                console.error("Failed to send verification:", err);
+                alert("Failed to send verification email.");
+              }
+            }}
             className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 text-sm"
           >
             Verify Email
           </button>
         )}
-        <button
-          onClick={logout}
-          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm"
-        >
+
+        <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm">
           Logout
         </button>
       </div>
@@ -66,13 +73,8 @@ const Dashboard = () => {
       <div className="flex flex-1 justify-center items-center">
         {isProfileIncomplete ? (
           <div className="text-center">
-            <h2 className="text-xl font-semibold text-red-600 mb-4">
-              Your profile is incomplete
-            </h2>
-            <button
-              onClick={() => setShowProfilePage(true)}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-            >
+            <h2 className="text-xl font-semibold text-red-600 mb-4">Your profile is incomplete</h2>
+            <button onClick={() => setShowProfilePage(true)} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
               Complete Profile
             </button>
           </div>
