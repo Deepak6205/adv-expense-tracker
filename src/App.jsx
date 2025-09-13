@@ -1,6 +1,10 @@
-// src/App.jsx
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -17,11 +21,10 @@ function App() {
     dispatch(setLoading(true));
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // reload and get token to be sure
         try {
           await user.reload();
-        } catch (e) {
-          // ignoring reload error
+        } catch (error) {
+          console.error(error);
         }
         const token = await user.getIdToken();
         dispatch(

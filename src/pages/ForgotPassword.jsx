@@ -1,4 +1,4 @@
-// src/pages/ForgotPassword.jsx
+
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import { auth } from "../services/firebase";
@@ -18,9 +18,9 @@ const ForgotPassword = () => {
 
     try {
       await sendPasswordResetEmail(auth, email);
-      setMessage("✅ Password reset link sent! Check your inbox.");
+      setMessage(" Password reset link sent! Check your inbox.");
     } catch (err) {
-      setError("❌ Failed to send reset email. Try again.");
+      setError("Failed to send reset email. Try again.");
     } finally {
       setLoading(false);
     }

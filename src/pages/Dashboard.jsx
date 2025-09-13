@@ -1,7 +1,7 @@
-// src/pages/Dashboard.jsx
+
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { logout as logoutAction, setUser } from "../redux/authSlice";
+import { logout as logoutAction, } from "../redux/authSlice";
 import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
 import Navbar from "../components/Navbar";
@@ -37,7 +37,7 @@ const Dashboard = () => {
     <div className="flex flex-col h-screen">
       <Navbar />
 
-      {/* Top Right Section */}
+      
       <div className="absolute top-4 right-6 flex items-center gap-4">
         {!isProfileIncomplete && (
           <div className="flex items-center gap-3">
@@ -69,7 +69,7 @@ const Dashboard = () => {
         </button>
       </div>
 
-      {/* Center Content */}
+      
       <div className="flex flex-1 justify-center items-center">
         {isProfileIncomplete ? (
           <div className="text-center">

@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import React from "react";
 import { useSelector } from "react-redux";
 
@@ -14,7 +13,9 @@ const Navbar = () => {
         <span className="cursor-pointer">Home</span>
         <span className="cursor-pointer">Products</span>
         <span className="cursor-pointer">About Us</span>
-        {isLoggedIn && <span className="text-sm text-green-600">Signed In</span>}
+        {isLoggedIn && (
+          <span className="text-sm text-green-600">Signed In</span>
+        )}
       </div>
     </nav>
   );

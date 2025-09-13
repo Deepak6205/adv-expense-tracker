@@ -1,4 +1,4 @@
-// src/pages/AuthPage.jsx
+
 import Navbar from "../components/Navbar";
 import AuthCard from "../components/AuthCard";
 import React from "react";

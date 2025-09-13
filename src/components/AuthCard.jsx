@@ -1,4 +1,4 @@
-// src/components/AuthCard.jsx
+
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { auth } from "../services/firebase";
@@ -31,7 +31,7 @@ const AuthCard = () => {
         const user = userCred.user;
         const token = await user.getIdToken();
 
-        // Optional: set displayName to email username if you like
+       
         await updateProfile(user, { displayName: user.email.split("@")[0] });
 
         dispatch(

@@ -1,8 +1,7 @@
-// src/redux/expensesSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  list: [], // each: { id, amount, description, category, createdAt }
+  list: [],
   premiumActivated: false,
 };
 
@@ -16,16 +15,26 @@ const expensesSlice = createSlice({
   initialState,
   reducers: {
     setExpenses(state, action) {
-      state.list = action.payload.map((e) => ({ ...e, amount: Number(e.amount) }));
+      state.list = action.payload.map((e) => ({
+        ...e,
+        amount: Number(e.amount),
+      }));
       state.premiumActivated = calcPremium(state.list);
     },
     addExpense(state, action) {
-      state.list.push({ ...action.payload, amount: Number(action.payload.amount) });
+      state.list.push({
+        ...action.payload,
+        amount: Number(action.payload.amount),
+      });
       state.premiumActivated = calcPremium(state.list);
     },
     updateExpense(state, action) {
       const idx = state.list.findIndex((e) => e.id === action.payload.id);
-      if (idx !== -1) state.list[idx] = { ...action.payload, amount: Number(action.payload.amount) };
+      if (idx !== -1)
+        state.list[idx] = {
+          ...action.payload,
+          amount: Number(action.payload.amount),
+        };
       state.premiumActivated = calcPremium(state.list);
     },
     deleteExpense(state, action) {
@@ -39,6 +48,11 @@ const expensesSlice = createSlice({
   },
 });
 
-export const { setExpenses, addExpense, updateExpense, deleteExpense, clearExpenses } =
-  expensesSlice.actions;
+export const {
+  setExpenses,
+  addExpense,
+  updateExpense,
+  deleteExpense,
+  clearExpenses,
+} = expensesSlice.actions;
 export default expensesSlice.reducer;

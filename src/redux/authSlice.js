@@ -1,12 +1,11 @@
-// src/redux/authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isLoggedIn: false,
   token: null,
   userId: null,
-  user: null, // firebase user object or user info
-  loading: true, // used while we check auth state on app start
+  user: null,
+  loading: true,
 };
 
 const authSlice = createSlice({
@@ -40,5 +39,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { login, logout, setUser, setToken, setLoading } = authSlice.actions;
+export const { login, logout, setUser, setToken, setLoading } =
+  authSlice.actions;
 export default authSlice.reducer;

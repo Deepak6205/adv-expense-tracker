@@ -1,4 +1,4 @@
-// src/pages/ProfilePage.jsx
+
 import React from "react";
 import ProfileForm from "../components/ProfileForm";
 
