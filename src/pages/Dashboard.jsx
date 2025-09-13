@@ -40,7 +40,7 @@ const Dashboard = () => {
     <div className="flex flex-col h-screen">
       <Navbar />
 
-      {/* Top Right User Info and Actions */}
+     
       <div className="absolute top-4 right-6 flex items-center gap-4">
         {!isProfileIncomplete && (
           <div className="flex items-center gap-3">
@@ -85,7 +85,7 @@ const Dashboard = () => {
         </button>
       </div>
 
-      {/* Main Content */}
+     
       <div className="flex flex-1 justify-center items-center w-full">
         {isProfileIncomplete ? (
           <div className="text-center">
@@ -105,7 +105,7 @@ const Dashboard = () => {
             <Route path="/home" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/products" element={<Products />} />
-            {/* Redirect unknown nested routes back to ExpenseTracker */}
+        
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         )}
